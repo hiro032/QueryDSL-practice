@@ -1,5 +1,8 @@
 package stydy.querydsl.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -8,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter @Setter
 public class Team {
     @Id
     @GeneratedValue
@@ -18,4 +22,10 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
 
+    protected Team() {
+    }
+
+    public Team(String name) {
+        this.name = name;
+    }
 }
