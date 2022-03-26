@@ -1,27 +1,29 @@
 package stydy.querydsl.entity;
 
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@Commit
 class MemberTest {
 
     @Autowired
     EntityManager em;
 
-    @Test
+    @BeforeEach
     void test() {
         Team teamA = new Team("team A");
         Team teamB = new Team("team B");
@@ -47,5 +49,18 @@ class MemberTest {
                 .getResultList();
 
         assertThat(members).hasSize(4);
+    }
+
+    @Test
+    void startQuerydsl() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QMember m = new QMember("m");
+
+        Member findMember = queryFactory
+                .select(m)
+                .from(m)
+                .where(m.username.eq("member1")).fetchOne();
+
+        assertThat(findMember.getUsername()).isEqualTo("member1");
     }
 }
