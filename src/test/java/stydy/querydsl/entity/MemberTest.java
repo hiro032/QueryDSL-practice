@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static stydy.querydsl.entity.QMember.*;
 
 @SpringBootTest
 @Transactional
@@ -22,9 +23,12 @@ class MemberTest {
 
     @Autowired
     EntityManager em;
+    JPAQueryFactory queryFactory;
 
     @BeforeEach
     void test() {
+        queryFactory = new JPAQueryFactory(em);
+
         Team teamA = new Team("team A");
         Team teamB = new Team("team B");
 
@@ -53,13 +57,34 @@ class MemberTest {
 
     @Test
     void startQuerydsl() {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QMember m = new QMember("m");
 
         Member findMember = queryFactory
                 .select(m)
                 .from(m)
                 .where(m.username.eq("member1")).fetchOne();
+
+        assertThat(findMember.getUsername()).isEqualTo("member1");
+    }
+
+    @Test
+    void useQType() {
+        QMember m = member;
+
+        Member findMember = queryFactory
+                .select(m)
+                .from(m)
+                .where(m.username.eq("member1")).fetchOne();
+
+        assertThat(findMember.getUsername()).isEqualTo("member1");
+    }
+
+    @Test
+    void useQTypeStatic() {
+        Member findMember = queryFactory
+                .select(member)
+                .from(member)
+                .where(member.username.eq("member1")).fetchOne();
 
         assertThat(findMember.getUsername()).isEqualTo("member1");
     }
