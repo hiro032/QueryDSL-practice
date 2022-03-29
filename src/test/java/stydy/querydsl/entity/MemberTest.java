@@ -99,4 +99,16 @@ class MemberTest {
 
         assertThat(findMember.getUsername()).isEqualTo("member1");
     }
+
+    @Test
+    void searchAndParam() {
+        Member findMember = queryFactory
+                .selectFrom(QMember.member)
+                .where(
+                        member.username.eq("member1"),
+                        member.age.eq(10))
+                .fetchOne();
+
+        assertThat(findMember.getUsername()).isEqualTo("member1");
+    }
 }
