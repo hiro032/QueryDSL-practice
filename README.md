@@ -1,2 +1,2 @@
 # QueryDSL-practice
-🐬"QueryDSL" practice repository
+"QueryDSL" practice repository
